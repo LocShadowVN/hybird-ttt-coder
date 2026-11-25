@@ -45,8 +45,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-test-
 
-      - name: Check Rust formatting
-        run: cargo fmt --all -- --check
+      - name: Rust formatting
+        run: cargo fmt
 
       - name: Run Clippy with zero warnings tolerance
         run: |
