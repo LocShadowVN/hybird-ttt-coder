@@ -1,0 +1,64 @@
+[build-system]
+requires = ["maturin>=1.8,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "hybrid-ttt-coder"
+version = "0.1.0"
+description = "Hybrid-TTT-Coder: 16B/3B-active 1M-context looped coding model with Rust native sandbox and Git extractor"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+dependencies = [
+    "torch>=2.3.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "maturin>=1.8,<2.0",
+    "mypy>=1.14.0",
+    "pytest>=8.3.0",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.9.0",
+]
+
+[tool.maturin]
+manifest-path = "rust_core/Cargo.toml"
+features = ["extension-module"]
+module-name = "hybrid_ttt_native"
+python-source = "."
+python-packages = ["model", "runtime", "train", "eval"]
+include = ["typings/hybrid_ttt_native.pyi"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = ["target", "rust_core/target", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "W"]
+ignore = ["B008"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+python_version = "3.11"
+mypy_path = ["typings"]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = ["torch", "torch.*"]
+ignore_missing_imports = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
